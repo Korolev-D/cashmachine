@@ -1,64 +1,93 @@
 <?php
-$bAuthorized = false;
+
+use providers\korolev\cashmachine\classes\user,
+    providers\korolev\cashmachine\classes\cashmachine;
+
+require_once $_SERVER["DOCUMENT_ROOT"] . "/init.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/header.php";
+
+$oUser = new User();
+$sError = "";
+if(!empty($_POST["FIELDS"]["NAME"]) && !empty($_POST["FIELDS"]["PASSWORD"])) $sError = $oUser->checkAdmin();
+
+$arBanknotes = array(5000, 2000, 1000, 500, 200, 100);
+$oCashMachine = new CashMachine();
+if($_GET){
+    $oCashMachine->setCashMachine();
+}
 ?>
-<!doctype html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="/korolev/cashmachine/libs/baseform/style.css">
-    <script src="/korolev/cashmachine/libs/baseform/script.js"></script>
-    <title>Создание банкомата</title>
-</head>
-<body>
-<div class="container">
-    <?php if($bAuthorized): ?>
-        <h1 class="form__title">Авторизация</h1>
-        <form action="" class="authorized-form">
-            <input type="text" name="phone" hidden>
-            <div class="form-group">
-                <label class="empty" for="name">Логин</label>
-                <input type="text" id="name" name=FIELDS[NAME] autocomplete="off" required>
-            </div>
-            <div class="form-group">
-                <label class="empty" for="password">Пароль</label>
-                <input class="empty" type="password" id="password" name=FIELDS[PASSWORD] autocomplete="off" required>
-            </div>
-            <button type="submit">Авторизоваться</button>
-        </form>
-    <?php else: ?>
-        <h1 class="form__title">Создание банкомата</h1>
-        <form action="" class="create-form">
-            <input type="text" name="phone" hidden>
-            <div class="form-group">
-                <label for="name">Серийный номер</label>
-                <input type="text" id="name" name=FIELDS[NAME] autocomplete="off" required readonly value="<?=random_int(10000000, 99999999);?>">
-            </div>
-            <div class="form-group">
-                <label class="empty" for="address">Адрес</label>
-                <input type="text" id="address" name=FIELDS[ADDRESS] autocomplete="off" required>
-            </div>
-            <div class="form-group">
-                <label class="empty" for="workTime">Режим работы</label>
-                <input type="text" id="workTime" name=FIELDS[WORK_TIME] autocomplete="off" required>
-            </div>
-            <h4 class="form__subtitle">Наполнение банкомата:</h4>
-            <div class="form-group">
-                <label class="empty" for="5000">5000</label>
-                <input type="text" id="5000" name=FIELDS[5000] autocomplete="off" required>
-            </div>
-            <div class="form-group">
-                <label class="empty" for="2000">2000</label>
-                <input type="text" id="2000" name=FIELDS[2000] autocomplete="off" required>
-            </div>
-            <div class="form-group">
-                <label for="name">Загрузка банкомата</label>
-                <input type="text" id="name" name=FIELDS[LOAD_CASHMACHINE] autocomplete="off" required readonly>
-            </div>
-            <button type="submit">Создать</button>
-        </form>
-    <?php endif; ?>
-</div>
-</body>
-</html>
+<section class="create-cashmachine">
+    <div class="container">
+        <?php if(!$oUser->isAdmin()): ?>
+            <h1 class="form__title">Авторизация</h1>
+            <form action="" class="authorized-form" method="post">
+                <div class="form-group__inner">
+                    <input type="text" name="phone" hidden>
+                    <div class="form-group">
+                        <label class="empty" for="name">Логин</label>
+                        <input type="text" id="name" name=FIELDS[NAME] autocomplete="off" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="empty" for="password">Пароль</label>
+                        <input class="empty" type="password" id="password" name=FIELDS[PASSWORD] autocomplete="off" required>
+                    </div>
+                </div>
+                <button class="button default" type="submit">Авторизоваться</button>
+                <?php if($sError !== ""): ?>
+                    <p class="form-message error"><?=$sError?></p>
+                <?php endif; ?>
+            </form>
+        <?php else: ?>
+            <?php if($_POST["CREATE_CASHMACHINE"] === "Y"): ?>
+                <h1 class="form__title">Банкомат успешно создан</h1>
+                <form action="" class="create-form" method="post">
+                    <input type="text" name="phone" hidden>
+                    <input type="text" name="CREATE_CASHMACHINE" value="" hidden>
+                    <button class="button default" type="submit">Создать еще один</button>
+                    <a class="button primary" href="/">Перейти к банкоматам</a>
+                </form>
+            <?php else: ?>
+                <h1 class="form__title">Создание банкомата</h1>
+                <form action="" class="create-form" method="post">
+                    <div class="form-group__inner">
+                        <input type="text" name="phone" hidden>
+                        <input type="text" name="CREATE_CASHMACHINE" value="Y" hidden>
+                        <div class="form-group">
+                            <label for="name">Серийный номер</label>
+                            <input type="text" id="name" name=FIELDS[NAME] autocomplete="off" required readonly value="<?=random_int(10000000, 99999999);?>">
+                        </div>
+                        <div class="form-group">
+                            <label class="empty" for="address">Адрес</label>
+                            <input type="text" id="address" name=FIELDS[ADDRESS] minlength="10" autocomplete="off" required>
+                            <button type="button" class="form-group__clear">&times;</button>
+                        </div>
+                        <div class="form-group">
+                            <label class="empty" for="workTime">Режим работы</label>
+                            <input class="work-time" type="text" id="workTime" name=FIELDS[WORK_TIME] autocomplete="off" required>
+                            <button type="button" class="form-group__clear">&times;</button>
+                        </div>
+                    </div>
+                    <div class="form-group__inner">
+                        <h4 class="form__subtitle">Наполнение банкомата:</h4>
+                        <?php foreach($arBanknotes as $arBanknote): ?>
+                            <div class="form-group">
+                                <label class="empty" for="<?=$arBanknote?>"><?=$arBanknote?></label>
+                                <input class="banknote" data-value="<?=$arBanknote?>" type="text" id="<?=$arBanknote?>" name=FIELDS[BANKNOTES][<?=$arBanknote?>] autocomplete="off" required>
+                                <button type="button" class="form-group__clear">&times;</button>
+                            </div>
+                        <?php endforeach; ?>
+                        <div class="form-group">
+                            <label for="name">Загрузка банкомата</label>
+                            <input type="text" id="name" name=FIELDS[LOAD_CASHMACHINE] autocomplete="off" required readonly value="0">
+                        </div>
+                    </div>
+                    <div class="form-group__inner">
+                        <button class="button default" type="submit">Создать</button>
+                        <a class="button primary" href="/">Перейти к банкоматам</a>
+                    </div>
+                </form>
+            <?php endif; ?>
+        <?php endif; ?>
+    </div>
+</section>
+<?php require_once $_SERVER["DOCUMENT_ROOT"] . "/footer.php"; ?>

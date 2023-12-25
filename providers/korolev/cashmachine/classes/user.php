@@ -1,15 +1,19 @@
 <?php
 
-namespace korolev\cashmachine\classes;
+namespace providers\korolev\cashmachine\classes;
 
 class User
 {
     const BANKNOTES = array(5000, 2000, 1000, 500, 200, 100);
+    const LOGIN = "mendeleev";
+    const PASSWORD = "f9lVbUSUaDP3HOeRLxYSYPp%bzGW%w";
     private int $limit;
+    private array $arPost;
 
     public function __construct()
     {
         $this->limit = 100000;
+        $this->arPost = $_POST;
     }
 
     public function setUser(): void
@@ -52,5 +56,17 @@ class User
             $this->setLimit($this->limit);
         }
         return $arResult;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $_SESSION["USER"][session_id()]["IS_ADMIN"] === "Y";
+    }
+
+    public function checkAdmin(): string
+    {
+        $bResult = $this->arPost["FIELDS"]["NAME"] === self::LOGIN && $this->arPost["FIELDS"]["PASSWORD"] === self::PASSWORD;
+        $_SESSION["USER"][session_id()]["IS_ADMIN"] = $bResult ? "Y" : "";
+        return $bResult ? "" : "Неверный логин или пароль!";
     }
 }

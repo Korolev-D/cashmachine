@@ -1,0 +1,31 @@
+* {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: system-ui;
+    --white: #ffffff;
+    --gray: #F4F4F5;
+    --dark-gray: #8F909B;
+    --green: #6c9d49;
+    --blue: #3151d2;
+    --tomato: #cd4848;
+    --gap: 16px;
+    --transition: .3s;
+}
+
+body {
+    width: 100vw;
+    height: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    padding: 100px 0;
+}
