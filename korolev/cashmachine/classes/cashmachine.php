@@ -12,6 +12,7 @@ class CashMachine
     public function setCashMachine(int $iLimit = 1000000): void
     {
         $_SESSION["CASH_MACHINE"][session_id()] = array(
+            "ID" => session_id(),
             "LIMIT" => $iLimit,
             "BANKNOTES" => array(5000, 2000, 1000, 500, 200, 100)
         );
