@@ -126,13 +126,19 @@ class User
 
     public function isAdmin(): bool
     {
-        return $_SESSION["USER"][session_id()]["IS_ADMIN"] === "Y";
+        $bResult = false;
+        if(isset($_SESSION["USER"]["IS_ADMIN"])){
+            $bResult = $_SESSION["USER"]["IS_ADMIN"] === "Y";
+        }
+        return $bResult;
     }
 
     public function checkAdmin(): string
     {
         $bResult = $this->arPost["FIELDS"]["NAME"] === self::LOGIN && $this->arPost["FIELDS"]["PASSWORD"] === self::PASSWORD;
-        $_SESSION["USER"][session_id()]["IS_ADMIN"] = $bResult ? "Y" : "";
+        $_SESSION["USER"] = array(
+            "IS_ADMIN" => $bResult ? "Y" : ""
+        );
         return $bResult ? "" : "Неверный логин или пароль!";
     }
 
