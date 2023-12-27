@@ -14,6 +14,7 @@ $oCashMachine = new CashMachine();
 $arBanknotes = $oCashMachine->getBanknotes();
 if($_POST["CREATE_CASHMACHINE"] === "Y") $oCashMachine->setCashMachine();
 ?>
+<script src="/local/libs/form/script.js"></script>
 <section class="create-cashmachine">
     <div class="container">
         <?php if(!$oUser->isAdmin()): ?>
@@ -37,13 +38,15 @@ if($_POST["CREATE_CASHMACHINE"] === "Y") $oCashMachine->setCashMachine();
             </form>
         <?php else: ?>
             <?php if($_POST["CREATE_CASHMACHINE"] === "Y"): ?>
-                <h1 class="form__title">Банкомат создан</h1>
-                <form action="" class="create-form" method="post">
-                    <input type="text" name="phone" hidden>
-                    <input type="text" name="CREATE_CASHMACHINE" value="" hidden>
-                    <button class="button default" type="submit">Создать еще один</button>
-                    <a class="button primary" href="/">Перейти к банкоматам</a>
-                </form>
+                <div class="container__inner">
+                    <h1 class="form__title">Банкомат создан</h1>
+                    <form action="" class="create-form" method="post">
+                        <input type="text" name="phone" hidden>
+                        <input type="text" name="CREATE_CASHMACHINE" value="" hidden>
+                        <button class="button default" type="submit">Создать еще один</button>
+                        <a class="button primary" href="/">Перейти к банкоматам</a>
+                    </form>
+                </div>
             <?php else: ?>
                 <h1 class="form__title">Создание банкомата</h1>
                 <form action="" class="create-form" method="post">
@@ -52,7 +55,7 @@ if($_POST["CREATE_CASHMACHINE"] === "Y") $oCashMachine->setCashMachine();
                         <input type="text" name="CREATE_CASHMACHINE" value="Y" hidden>
                         <div class="form-group">
                             <label for="name">Серийный номер</label>
-                            <input type="text" id="name" name=FIELDS[NAME] autocomplete="off" required readonly value="<?=random_int(10000000, 99999999);?>">
+                            <input type="text" id="name" name=FIELDS[ID] autocomplete="off" required readonly value="<?=random_int(10000000, 99999999);?>">
                         </div>
                         <div class="form-group">
                             <label class="empty" for="address">Адрес</label>
@@ -77,7 +80,7 @@ if($_POST["CREATE_CASHMACHINE"] === "Y") $oCashMachine->setCashMachine();
                             <?php endforeach; ?>
                             <div class="form-group">
                                 <label for="name">Загрузка банкомата</label>
-                                <input type="text" id="name" name=FIELDS[LOAD_CASHMACHINE] autocomplete="off" required readonly value="0">
+                                <input type="text" id="name" name=FIELDS[BALANCE] autocomplete="off" required readonly value="0">
                             </div>
                         </div>
                     <?php endif; ?>

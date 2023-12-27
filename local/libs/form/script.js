@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.querySelector("form"),
         inputs = form.querySelectorAll("input"),
         clearButtons = form.querySelectorAll(".form-group__clear"),
-        loadCashMachine = form.querySelector("input[name=\"FIELDS[LOAD_CASHMACHINE]\"]");
+        loadCashMachine = form.querySelector("input[name=\"FIELDS[BALANCE]\"]");
 
     inputs.forEach(input => {
         input.addEventListener("focusin", focusIn);
