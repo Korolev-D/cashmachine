@@ -10,11 +10,9 @@ $oUser = new User();
 $sError = "";
 if(!empty($_POST["FIELDS"]["NAME"]) && !empty($_POST["FIELDS"]["PASSWORD"])) $sError = $oUser->checkAdmin();
 
-$arBanknotes = array(5000, 2000, 1000, 500, 200, 100);
 $oCashMachine = new CashMachine();
-if($_GET){
-    $oCashMachine->setCashMachine();
-}
+$arBanknotes = $oCashMachine->getBanknotes();
+if($_POST["CREATE_CASHMACHINE"] === "Y") $oCashMachine->setCashMachine();
 ?>
 <section class="create-cashmachine">
     <div class="container">
@@ -39,7 +37,7 @@ if($_GET){
             </form>
         <?php else: ?>
             <?php if($_POST["CREATE_CASHMACHINE"] === "Y"): ?>
-                <h1 class="form__title">Банкомат успешно создан</h1>
+                <h1 class="form__title">Банкомат создан</h1>
                 <form action="" class="create-form" method="post">
                     <input type="text" name="phone" hidden>
                     <input type="text" name="CREATE_CASHMACHINE" value="" hidden>
@@ -67,20 +65,22 @@ if($_GET){
                             <button type="button" class="form-group__clear">&times;</button>
                         </div>
                     </div>
-                    <div class="form-group__inner">
-                        <h4 class="form__subtitle">Наполнение банкомата:</h4>
-                        <?php foreach($arBanknotes as $arBanknote): ?>
+                    <?php if(!empty($arBanknotes)): ?>
+                        <div class="form-group__inner">
+                            <h4 class="form__subtitle">Наполнение банкомата:</h4>
+                            <?php foreach($arBanknotes as $arBanknote): ?>
+                                <div class="form-group">
+                                    <label class="empty" for="<?=$arBanknote?>"><?=$arBanknote?></label>
+                                    <input class="banknote" data-value="<?=$arBanknote?>" type="text" id="<?=$arBanknote?>" name=FIELDS[BANKNOTES][<?=$arBanknote?>] autocomplete="off" required>
+                                    <button type="button" class="form-group__clear">&times;</button>
+                                </div>
+                            <?php endforeach; ?>
                             <div class="form-group">
-                                <label class="empty" for="<?=$arBanknote?>"><?=$arBanknote?></label>
-                                <input class="banknote" data-value="<?=$arBanknote?>" type="text" id="<?=$arBanknote?>" name=FIELDS[BANKNOTES][<?=$arBanknote?>] autocomplete="off" required>
-                                <button type="button" class="form-group__clear">&times;</button>
+                                <label for="name">Загрузка банкомата</label>
+                                <input type="text" id="name" name=FIELDS[LOAD_CASHMACHINE] autocomplete="off" required readonly value="0">
                             </div>
-                        <?php endforeach; ?>
-                        <div class="form-group">
-                            <label for="name">Загрузка банкомата</label>
-                            <input type="text" id="name" name=FIELDS[LOAD_CASHMACHINE] autocomplete="off" required readonly value="0">
                         </div>
-                    </div>
+                    <?php endif; ?>
                     <div class="form-group__inner">
                         <button class="button default" type="submit">Создать</button>
                         <a class="button primary" href="/">Перейти к банкоматам</a>

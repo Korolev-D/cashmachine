@@ -7,8 +7,9 @@
     <link rel="stylesheet" href="/local/css/base.css">
     <link rel="stylesheet" href="/local/css/cashmachine.css">
     <link rel="stylesheet" href="/local/css/createcashmachine.css">
-    <link rel="stylesheet" href="/libs/form/style.css">
-    <script src="/libs/form/script.js"></script>
-    <title>Week Dev</title>
+    <link rel="stylesheet" href="/local/libs/form/style.css">
+    <script src="/local/js/cashmachine.js"></script>
+    <script src="/local/libs/form/script.js"></script>
+    <title>CashMachine</title>
 </head>
 <body>
